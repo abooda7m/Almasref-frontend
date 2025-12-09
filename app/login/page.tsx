@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { LogIn } from 'lucide-react'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -41,12 +42,18 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-32 h-32 bg-almasref-green/10 rounded-xl flex items-center justify-center">
-              <div className="text-almasref-green text-5xl font-bold">م</div>
+          <div className="flex justify-center mb-6">
+            <div className="relative w-48 h-48">
+              <Image
+                src="/logo.png"
+                alt="المصرف - Almasrif"
+                width={192}
+                height={192}
+                className="object-contain"
+                priority
+              />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-almasref-gray">المصرف</h1>
           <p className="text-gray-600 mt-2">لوحة المتسابقين</p>
         </div>
 
