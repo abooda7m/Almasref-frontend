@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Trophy, Target, Star, Award, LogOut, Users, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
+import Footer from '@/app/components/Footer'
 
 interface UserData {
   id: number
@@ -114,21 +115,21 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-almasref-green">المصرف</h1>
             <div className="flex gap-3">
-              <Link 
+              <Link
                 href="/leaderboard"
                 className="px-4 py-2 text-almasref-gray hover:bg-gray-100 rounded-lg transition flex items-center gap-2"
               >
                 <TrendingUp className="w-5 h-5" />
                 <span className="hidden sm:inline">المتصدرين</span>
               </Link>
-              <Link 
+              <Link
                 href="/excellent"
                 className="px-4 py-2 text-almasref-gray hover:bg-gray-100 rounded-lg transition flex items-center gap-2"
               >
@@ -147,7 +148,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full">
         {/* Welcome Card */}
         <div className="bg-gradient-to-r from-almasref-green to-almasref-green-dark text-white rounded-2xl p-8 mb-8 shadow-lg">
           <h2 className="text-3xl font-bold mb-2">
@@ -213,6 +214,8 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   )
 }

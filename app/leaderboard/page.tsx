@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Trophy, Medal, Award, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Footer from '@/app/components/Footer'
 
 interface TopUser {
   user_id: number
@@ -95,7 +96,7 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -110,7 +111,7 @@ export default function LeaderboardPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
         {/* Title */}
         <div className="text-center mb-8">
           <Trophy className="w-16 h-16 text-almasref-green mx-auto mb-4" />
@@ -174,6 +175,8 @@ export default function LeaderboardPage() {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   )
 }

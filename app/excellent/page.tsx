@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Star, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Footer from '@/app/components/Footer'
 
 interface ExcellentUser {
   user_id: number
@@ -39,8 +40,9 @@ export default function ExcellentPage() {
       .from('leaderboard')
       .select('user_id, excellent_issues')
       .neq('excellent_issues', 'لا يوجد')
+      .not('excellent_issues', 'is', null)
 
-    if (!scores) {
+    if (!scores || scores.length === 0) {
       setLoading(false)
       return
     }
@@ -59,13 +61,34 @@ export default function ExcellentPage() {
       const user = users?.find(u => u.id === score.user_id)
       if (!user || !score.excellent_issues) return
 
-      const issues = score.excellent_issues.split('،').map((s: string) => s.trim())
+      // Handle different separators: Arabic comma, regular comma, and spaces
+      const issues = score.excellent_issues
+        .split(/[،,]/)
+        .map((s: string) => s.trim())
+        .filter((s: string) => s.length > 0)
 
       issues.forEach((issue: string) => {
-        const match = issue.match(/العدد (\d+)/)
-        if (!match) return
+        // Match different patterns: "العدد 1", "العدد١", "عدد 1", etc.
+        const match = issue.match(/(?:ال)?عدد\s*[\u0660-\u0669\d]+|(?:ال)?عدد\s*(\d+)/)
+        if (!match) {
+          console.log('No match for issue:', issue)
+          return
+        }
 
-        const issueNum = parseInt(match[1])
+        // Extract the number, handling both Arabic and English digits
+        const numberMatch = issue.match(/[\u0660-\u0669\d]+/)
+        if (!numberMatch) return
+
+        // Convert Arabic digits to English if needed
+        let numberStr = numberMatch[0]
+        const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+        arabicDigits.forEach((arabicDigit, index) => {
+          numberStr = numberStr.replace(new RegExp(arabicDigit, 'g'), index.toString())
+        })
+
+        const issueNum = parseInt(numberStr)
+        if (isNaN(issueNum) || issueNum < 1 || issueNum > 8) return
+
         if (!byIssue[issueNum]) {
           byIssue[issueNum] = []
         }
@@ -79,6 +102,7 @@ export default function ExcellentPage() {
       })
     })
 
+    console.log('Excellent by issue:', byIssue)
     setExcellentByIssue(byIssue)
     setLoading(false)
   }
@@ -95,7 +119,7 @@ export default function ExcellentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -110,7 +134,7 @@ export default function ExcellentPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full">
         {/* Title */}
         <div className="text-center mb-8">
           <Star className="w-16 h-16 text-yellow-500 fill-yellow-500 mx-auto mb-4" />
@@ -172,6 +196,8 @@ export default function ExcellentPage() {
           })}
         </div>
       </main>
+
+      <Footer />
     </div>
   )
 }
